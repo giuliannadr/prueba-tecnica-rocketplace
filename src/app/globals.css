@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbfaf8;
+  --foreground: #1c1b19;
+  --surface: #f1efea;
+  --line: #e2ded6;
+  --muted: #5f5b53;
+  --accent: #1f5f4a;
+  --accent-ink: #ffffff;
+  --danger: #a32d1f;
 }
 
 @theme inline {
@@ -14,13 +20,107 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #151513;
+    --foreground: #ecebe7;
+    --surface: #1e1e1b;
+    --line: #45433d;
+    --muted: #a7a399;
+    --accent: #6fc1a3;
+    --accent-ink: #0e2a20;
+    --danger: #f08a7c;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+@layer components {
+  .field {
+    @apply rounded-md border border-[var(--line)] bg-[var(--background)] px-3 py-2 text-base font-normal outline-none transition-[border-color,box-shadow] duration-150;
+  }
+  .field:focus-visible {
+    @apply border-[var(--accent)] ring-2 ring-[var(--accent)]/25;
+  }
+
+  .btn-primary,
+  .btn-ghost,
+  .chip {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-[background-color,color,transform] duration-150 ease-out outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)];
+  }
+  .btn-primary {
+    @apply bg-[var(--accent)] px-4 py-2 text-[var(--accent-ink)] hover:brightness-110 active:scale-[0.98] disabled:opacity-60;
+  }
+  .btn-ghost {
+    @apply px-3 py-2 hover:bg-[var(--surface)] active:scale-[0.98];
+  }
+  .chip {
+    @apply border border-[var(--line)] px-3 py-1.5 hover:bg-[var(--surface)];
+  }
+  .chip-active {
+    @apply border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--foreground)];
+  }
+
+  .badge {
+    @apply inline-block rounded px-2 py-0.5 text-xs font-medium;
+  }
+  .badge-pendiente { @apply bg-amber-100 text-amber-900; }
+  .badge-pagado { @apply bg-sky-100 text-sky-900; }
+  .badge-enviado { @apply bg-violet-100 text-violet-900; }
+  .badge-entregado { @apply bg-emerald-100 text-emerald-900; }
+  .badge-cancelado { @apply bg-stone-200 text-stone-700; }
+
+  .status-trigger {
+    @apply inline-flex items-center gap-1 transition-[opacity,transform,box-shadow] duration-150 ease-out outline-none hover:ring-1 hover:ring-current/30 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)];
+  }
+
+  /* Popover: se saca el centrado por defecto y se posiciona desde JS junto al botón. */
+  .status-menu {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    width: 11rem;
+    padding: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: var(--background);
+    color: var(--foreground);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+    transform-origin: top left;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+    transition:
+      opacity 150ms ease-out,
+      transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      display 150ms allow-discrete,
+      overlay 150ms allow-discrete;
+  }
+  .status-menu[data-side="top"] {
+    transform-origin: bottom left;
+    transform: translateY(4px) scale(0.97);
+  }
+  .status-menu:popover-open {
+    opacity: 1;
+    transform: none;
+  }
+  @starting-style {
+    .status-menu:popover-open {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.97);
+    }
+  }
+  .status-option {
+    @apply flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-sm outline-none transition-colors duration-100 hover:bg-[var(--surface)] focus-visible:bg-[var(--surface)];
+  }
+  .dot-pendiente { @apply bg-amber-400; }
+  .dot-pagado { @apply bg-sky-400; }
+  .dot-enviado { @apply bg-violet-400; }
+  .dot-entregado { @apply bg-emerald-400; }
+  .dot-cancelado { @apply bg-stone-400; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
 }
